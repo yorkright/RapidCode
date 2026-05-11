@@ -13,9 +13,12 @@ export class ApiError extends Error {
     this.status = status;
     this.info = info;
 
+    // This is required for custom errors in TypeScript to correctly maintain the prototype chain
+    Object.setPrototypeOf(this, ApiError.prototype);
+
     // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, ApiError);
+    if (typeof (Error as any).captureStackTrace === 'function') {
+      (Error as any).captureStackTrace(this, ApiError);
     }
   }
 }

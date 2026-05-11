@@ -41,6 +41,7 @@
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "signal": "^7.0.6",
+    "svix": "^1.93.0",
     "swr": "^2.4.1",
     "uuid": "^13.0.0"
   },
@@ -53,7 +54,7 @@
     "@types/pdf-parse": "^1.1.5",
     "@types/react": "19.2.2",
     "babel-plugin-react-compiler": "1.0.0",
-    "baseline-browser-mapping": "^2.10.8",
+    "baseline-browser-mapping": "^2.10.29",
     "eslint": "^9",
     "eslint-config-next": "16.0.0",
     "tailwindcss": "^4"
