@@ -1,10 +1,10 @@
 // app/api/messages/route.ts
 import { NextResponse } from "next/server";
+// app/api/messages/route.ts
 import Message, { IMessage } from "../../../models/Message";
 import Conversation from "../../../models/Conversation";
-import { connectToDB } from "../../../lib/mongoose";
+import connectToDB from "../../../lib/mongoose"; // FIX: Changed from { connectToDB } to connectToDB
 import { auth } from "@clerk/nextjs/server";
-
 /**
  * 🔐 AUTH HELPER (async fix)
  */

@@ -1,66 +1,60 @@
-import type { ConnectOptions } from "mongoose";
+import mongoose, { Mongoose } from 'mongoose';
 
-const mongoose = await import("mongoose"); 
-
-// ✅ Global cache type for Next.js (prevents multiple connections in dev)
-type MongooseCache = {
-  conn: typeof mongoose | null;
-  promise: Promise<typeof mongoose> | null;
-};
-
-// ✅ Ensure we reuse existing connection during hot reload
-let cached = (globalThis as any).mongoose as MongooseCache;
-
-if (!cached) {
-  cached = (globalThis as any).mongoose = { conn: null, promise: null };
-}
-
-// ✅ Ensure environment variable exists
-const MONGODB_URI = process.env.MONGODB_URI;
-
+const MONGODB_URI = process.env.MONGODB_URI!;
 
 if (!MONGODB_URI) {
-  throw new Error("❌ Missing MONGODB_URI in environment variables.");
+  throw new Error(
+    'Please define the MONGODB_URI environment variable inside .env.local'
+  );
 }
 
-// ✅ Connection options tuned for serverless & production stability
-const CONNECTION_OPTIONS: ConnectOptions = {
-  dbName: "finance_ai_chat",
-  maxPoolSize: 10, // ✅ optimal for most use cases
-  minPoolSize: 2,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  autoIndex: process.env.NODE_ENV !== "production",
-};
-
 /**
- * ✅ Connect to MongoDB (reusable + production safe)
- * - Works for both serverless and persistent environments
- * - Prevents multiple simultaneous connections
+ * Global is used here to maintain a cached connection across hot reloads
+ * in development. This prevents connections growing exponentially
+ * during API Route usage.
  */
-export async function connectToDB(): Promise<typeof mongoose> {
-  if (cached.conn) return cached.conn;
+interface MongooseCache {
+  conn: Mongoose | null;
+  promise: Promise<Mongoose> | null;
+}
 
-  if (!cached.promise) {
-    cached.promise = mongoose
-      .connect(MONGODB_URI, CONNECTION_OPTIONS)
-      .then((mongooseInstance) => {
-        if (process.env.NODE_ENV !== "production") {
-          console.log("✅ MongoDB connected successfully (cached).");
-        }
-        return mongooseInstance;
-      })
-      .catch((err) => {
-        console.error("❌ MongoDB connection failed :", err);
-        cached.promise = null; // reset cache on failure
-        throw err;
-      });
+declare global {
+  // eslint-disable-next-line no-var
+  var mongoose: MongooseCache | undefined;
+}
+
+let cached = global.mongoose;
+
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function dbConnect() {
+  if (cached.conn) {
+    return cached.conn;
   }
 
-  cached.conn = await cached.promise;
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
+    };
+
+    // The fix: renamed the callback parameter to mongooseInstance 
+    // to avoid shadowing the imported mongoose object and ensured 
+    // the promise resolves to the instance.
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongooseInstance) => {
+      return mongooseInstance;
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (e) {
+    cached.promise = null;
+    throw e;
+  }
+
   return cached.conn;
 }
 
-
-
-
+export default dbConnect;

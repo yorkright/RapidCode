@@ -1,6 +1,6 @@
 import  { currentUser } from "@clerk/nextjs/server";
-import { connectToDB } from "./mongoose";
 import User, { IUser } from "../models/User";
+import connectToDB from "./mongoose";
 
 export interface ClerkUserData {
   clerkId: string;

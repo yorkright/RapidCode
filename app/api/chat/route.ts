@@ -1,10 +1,13 @@
 // app/api/chat/route.ts
 import { NextResponse } from "next/server";
 import crypto from "crypto";
-import { connectToDB } from "../../../lib/mongoose";
+import connectToDB from "../../../lib/mongoose"; // FIX: Changed from { connectToDB } to connectToDB
 import Conversation from "../../../models/Conversation";
 import Message from "../../../models/Message";
 import SystemInstruction from "../../../models/SystemInstruction";
+
+// ... rest of your code ...
+
 import { GoogleGenerativeAI, Content } from "@google/generative-ai";
 import { auth } from "@clerk/nextjs/server";
 

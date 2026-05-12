@@ -1,7 +1,9 @@
-// ✅ app/api/system/route.ts
+// app/api/system/route.ts
 import { NextResponse, NextRequest } from "next/server";
-import { connectToDB } from "../../../lib/mongoose";
+import connectToDB from "../../../lib/mongoose"; // FIX: Changed from { connectToDB } to connectToDB
 import SystemInstruction from "../../../models/SystemInstruction";
+
+// ... rest of your code ...
 
 const ADMIN_KEY = process.env.SYSTEM_ADMIN_KEY;
 

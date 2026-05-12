@@ -1,8 +1,11 @@
 // app/api/conversations/route.ts
 import { NextResponse } from "next/server";
+// app/api/conversations/route.ts
 import { auth } from "@clerk/nextjs/server";
 import Conversation from "../../../models/Conversation";
-import { connectToDB } from "../../../lib/mongoose";
+import connectToDB from "../../../lib/mongoose"; // FIX: Changed from { connectToDB } to connectToDB
+
+// ... rest of your code ...
 
 // ========================
 // GET → Fetch all user conversations

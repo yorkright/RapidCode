@@ -1,7 +1,10 @@
+// app/api/users/sync/route.ts
 import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
-import { connectToDB } from "../../../../lib/mongoose";
+import connectToDB from "../../../../lib/mongoose"; // FIX: Changed from { connectToDB } to connectToDB
 import User from "../../../../models/User";
+
+// ... rest of your code ...
 
 /**
  * POST /api/users/sync

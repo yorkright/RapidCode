@@ -1,8 +1,10 @@
 // app/api/conversations/[id]/route.ts
 import Conversation from "../../../../models/Conversation";
-import { connectToDB } from "../../../../lib/mongoose";
+import connectToDB from "../../../../lib/mongoose"; // FIX: Changed from { connectToDB } to connectToDB
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";  // ✅ Correct for the latest Clerk
+import { auth } from "@clerk/nextjs/server";
+
+// ... rest of your code ...
 
 // ==========================
 // 🔐 CHECK AUTH HELPER
